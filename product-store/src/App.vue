@@ -63,7 +63,7 @@
                 />
             </div>
             <div class="flex justify-content-end gap-2">
-                <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
+                <Button type="button" label="Cancel" severity="secondary" @click="limparCadastro"></Button>
                 <Button type="button" label="Save" @click="adicionarProduto(this.product)"></Button>
             </div>
   </Dialog>
@@ -101,7 +101,7 @@
                 />
             </div>
             <div class="flex justify-content-end gap-2">
-                <Button type="button" label="Cancel" severity="secondary" @click="visibleEdit = false"></Button>
+                <Button type="button" label="Cancel" severity="secondary" @click="limparCadastro"></Button>
                 <Button type="button" label="Save" @click="editarProduto(product.id, this.product)"></Button>
             </div>
         </Dialog>
@@ -136,10 +136,14 @@ import api from './plugins/axios';
     methods: {
       limparCadastro(){
         this.product = {
+          id: '',
           name: '',
           price: '',
           description: ''
         }
+        console.log(this.product);
+        this.visibleEdit = false
+        this.visible = false
       },
       mostraProdutos() {
         api.get('/products?isActive=true')
@@ -158,7 +162,6 @@ import api from './plugins/axios';
         });
       },
       buscarProduto(id){
-
         api.get(`/products/${id}`)
         .then(resp => {
           this.product.id =  resp.data.data.id
@@ -180,11 +183,11 @@ import api from './plugins/axios';
         });
       },
       adicionarProduto(product){
+        this.limparCadastro()
         api.post('/products/', product)
           .then(resp => {
             this.visible = false
             this.mostraProdutos()
-            this.limparCadastro()
         })
         .catch(error => {
             console.log(error);
